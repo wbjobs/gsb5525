@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 万条数据 · 虚拟滚动性能实验台</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>10 万条数据 · 虚拟滚动性能实验台</h1>
+    <div class="controls">
+      <label class="switch">
+        <input type="checkbox" id="virtualToggle" checked>
+        <span>虚拟滚动</span>
+      </label>
+      <input type="search" id="searchInput" placeholder="搜索 id / 姓名 / 分类…" autocomplete="off">
+      <label class="sample-rate">
+        采样频率
+        <select id="sampleRate">
+          <option value="250">250ms</option>
+          <option value="500" selected>500ms</option>
+          <option value="1000">1000ms</option>
+          <option value="2000">2000ms</option>
+        </select>
+      </label>
+      <button id="snapshotBtn" title="记录当前性能快照用于对比">记录快照</button>
+      <button id="clearSnapshotBtn" title="清空对比快照">清空对比</button>
+    </div>
+  </header>
+
+  <section class="status-bar" id="statusBar">
+    <span>总数据 <b id="statTotal">-</b></span>
+    <span>过滤后 <b id="statFiltered">-</b></span>
+    <span>DOM 节点 <b id="statDom">-</b></span>
+    <span>可见范围 <b id="statRange">-</b></span>
+    <span>FPS <b id="statFps">-</b></span>
+    <span>长任务 <b id="statLongtask">0 次</b></span>
+    <span>内存 <b id="statMemory">-</b></span>
+    <span>最近渲染 <b id="statRender">-</b></span>
+  </section>
+
+  <main class="layout">
+    <section class="list-panel">
+      <div class="list-header" id="listHeader">
+        <div class="col col-id"    data-key="id">ID <i class="arrow"></i></div>
+        <div class="col col-name"  data-key="name">姓名 <i class="arrow"></i></div>
+        <div class="col col-cat"   data-key="category">分类 <i class="arrow"></i></div>
+        <div class="col col-score" data-key="score">评分 <i class="arrow"></i></div>
+        <div class="col col-date"  data-key="date">更新日期 <i class="arrow"></i></div>
+      </div>
+      <div class="viewport" id="viewport">
+        <div class="spacer" id="spacer">
+          <div class="rows-layer" id="rowsLayer"></div>
+        </div>
+        <div class="empty-tip" id="emptyTip" hidden>无匹配结果</div>
+        <div class="loading-tip" id="loadingTip">正在生成 100,000 条数据…</div>
+      </div>
+    </section>
+
+    <aside class="monitor-panel">
+      <h2>性能监控</h2>
+      <canvas id="fpsChart" width="360" height="150"></canvas>
+      <div class="chart-legend">
+        <span class="legend-fps">— FPS</span>
+        <span class="legend-mem">— 内存 (MB)</span>
+      </div>
+      <ul class="metrics">
+        <li>当前 FPS <b id="mFps">-</b></li>
+        <li>平均 FPS（近 10 次采样）<b id="mFpsAvg">-</b></li>
+        <li>长任务次数 / 总耗时 / 最长 <b id="mLongtask">0 / 0ms / 0ms</b></li>
+        <li>JS 堆内存 <b id="mMemory">-</b></li>
+        <li>最近渲染耗时 <b id="mRender">-</b></li>
+      </ul>
+
+      <h2>性能对比快照</h2>
+      <table class="snapshot-table" id="snapshotTable">
+        <thead>
+          <tr><th>#</th><th>模式</th><th>平均FPS</th><th>内存MB</th><th>长任务</th><th>渲染ms</th><th>ΔFPS</th></tr>
+        </thead>
+        <tbody id="snapshotBody">
+          <tr class="placeholder"><td colspan="7">点击「记录快照」在开关虚拟滚动前后各记录一次</td></tr>
+        </tbody>
+      </table>
+      <p class="hint" id="compareHint"></p>
+    </aside>
+  </main>
+
+  <script src="js/monitor.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
