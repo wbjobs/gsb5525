@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 万条数据 · 虚拟滚动性能实验台</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <h1>10 万行列表 · 性能实验台</h1>
+  <div class="controls">
+    <label class="switch">
+      <input type="checkbox" id="virtualToggle" checked>
+      <span>虚拟滚动</span>
+    </label>
+    <input type="search" id="searchInput" placeholder="搜索名称 / 分类…" autocomplete="off">
+    <select id="sortSelect">
+      <option value="">排序：默认</option>
+      <option value="name:asc">名称 ↑</option>
+      <option value="name:desc">名称 ↓</option>
+      <option value="value:asc">数值 ↑</option>
+      <option value="value:desc">数值 ↓</option>
+      <option value="date:asc">日期 ↑</option>
+      <option value="date:desc">日期 ↓</option>
+    </select>
+    <label class="sample-rate">
+      采样频率
+      <select id="sampleRate">
+        <option value="100">100ms</option>
+        <option value="250" selected>250ms</option>
+        <option value="500">500ms</option>
+        <option value="1000">1000ms</option>
+      </select>
+    </label>
+    <button id="snapshotBtn" title="记录当前性能快照用于对比">📸 记录快照</button>
+  </div>
+</header>
+
+<section class="dashboard">
+  <div class="stat" id="statFps">
+    <div class="stat-label">FPS</div>
+    <div class="stat-value" id="fpsValue">--</div>
+    <canvas id="fpsChart" width="220" height="44"></canvas>
+    <div class="stat-snapshot" id="fpsSnapshot"></div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">长任务 (&gt;50ms)</div>
+    <div class="stat-value" id="longTaskValue">0</div>
+    <div class="stat-sub" id="longTaskSub">最长 -- ms</div>
+    <div class="stat-snapshot" id="longTaskSnapshot"></div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">渲染耗时</div>
+    <div class="stat-value" id="renderTimeValue">--</div>
+    <div class="stat-sub">单次列表渲染 (均值)</div>
+    <div class="stat-snapshot" id="renderSnapshot"></div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">JS 堆内存</div>
+    <div class="stat-value" id="memoryValue">--</div>
+    <div class="stat-sub" id="domNodeValue">DOM 节点 --</div>
+    <div class="stat-snapshot" id="memorySnapshot"></div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">数据</div>
+    <div class="stat-value" id="rowCountValue">--</div>
+    <div class="stat-sub" id="viewInfo">可见 -- 行</div>
+    <div class="stat-snapshot"></div>
+  </div>
+</section>
+
+<main class="list-wrap">
+  <div id="viewport" class="viewport">
+    <div id="spacer" class="spacer">
+      <div id="rows" class="rows"></div>
+    </div>
+  </div>
+  <div id="listStatus" class="list-status"></div>
+</main>
+
+<script src="data-gen.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
